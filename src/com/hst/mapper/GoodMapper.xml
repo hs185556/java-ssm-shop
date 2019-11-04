@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hst.mapper.GoodMapper">
+
+  <resultMap id="BaseResultMap" type="com.hst.pojo.Good">
+    <id column="g_id" jdbcType="INTEGER" property="gId" />
+    <result column="goodname" jdbcType="VARCHAR" property="goodname" />
+    <result column="price" jdbcType="REAL" property="price" />
+    <result column="repertory" jdbcType="INTEGER" property="repertory" />
+    <result column="piclink" jdbcType="VARCHAR" property="piclink" />
+  </resultMap>
+  
+  <sql id="Base_Column_List">
+    g_id, goodname, price, repertory, piclink
+  </sql>
+  
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from good
+    where g_id = #{gId,jdbcType=INTEGER}
+  </select>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from good
+    where g_id = #{gId,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.hst.pojo.Good">
+    insert into good (g_id, goodname, price, 
+      repertory, piclink)
+    values (#{gId,jdbcType=INTEGER}, #{goodname,jdbcType=VARCHAR}, #{price,jdbcType=REAL}, 
+      #{repertory,jdbcType=INTEGER}, #{piclink,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="insertSelective" parameterType="com.hst.pojo.Good">
+    insert into good
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="gId != null">
+        g_id,
+      </if>
+      <if test="goodname != null">
+        goodname,
+      </if>
+      <if test="price != null">
+        price,
+      </if>
+      <if test="repertory != null">
+        repertory,
+      </if>
+      <if test="piclink != null">
+        piclink,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="gId != null">
+        #{gId,jdbcType=INTEGER},
+      </if>
+      <if test="goodname != null">
+        #{goodname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        #{price,jdbcType=REAL},
+      </if>
+      <if test="repertory != null">
+        #{repertory,jdbcType=INTEGER},
+      </if>
+      <if test="piclink != null">
+        #{piclink,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateByPrimaryKeySelective" parameterType="com.hst.pojo.Good">
+    update good
+    <set>
+      <if test="goodname != null">
+        goodname = #{goodname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null">
+        price = #{price,jdbcType=REAL},
+      </if>
+      <if test="repertory != null">
+        repertory = #{repertory,jdbcType=INTEGER},
+      </if>
+      <if test="piclink != null">
+        piclink = #{piclink,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where g_id = #{gId,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateByPrimaryKey" parameterType="com.hst.pojo.Good">
+    update good
+    set goodname = #{goodname,jdbcType=VARCHAR},
+      price = #{price,jdbcType=REAL},
+      repertory = #{repertory,jdbcType=INTEGER},
+      piclink = #{piclink,jdbcType=VARCHAR}
+    where g_id = #{gId,jdbcType=INTEGER}
+  </update>
+  
+  <!-- 查询 good 表的所有数据 -->
+  <select id="selectGoodAll"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from good
+  </select>
+  
+  <!-- 根据gid查询评论 -->
+  <select id="seletCommentByGId" parameterType="java.lang.Integer"  resultMap="com.hst.mapper.CommentMapper.BaseResultMap">
+    select 
+    <include refid="com.hst.mapper.CommentMapper.Base_Column_List" />
+    from comment
+    where g_id = #{gId,jdbcType=INTEGER}
+  </select>
+  
+  <!-- 根据页数获取商品 -->
+  <select id="selectGoodByPage" parameterType="java.util.Map" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from 
+    (select (@i := @i + 1) as i,
+    <include refid="Base_Column_List" />
+    from good,(select @i := 0) b) temp
+    where i > #{pstart,jdbcType=INTEGER} order by g_id limit #{psize,jdbcType=INTEGER};
+  </select>
+  
+  <!-- 根据商品名获取商品 -->
+  <select id="selectGoodByGoodname" parameterType="java.lang.String"  resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from good
+    where goodname = #{goodname,jdbcType=VARCHAR}
+  </select>
+</mapper>

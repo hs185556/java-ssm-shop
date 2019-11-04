@@ -1,0 +1,10 @@
+.LoginView>a:nth-child(1){
+	float:left;
+	padding: 0;
+}
+.LoginView a:nth-child(1) img{
+	width: 48px;
+}
+.LoginView a:nth-child(2){
+	float: left;
+}

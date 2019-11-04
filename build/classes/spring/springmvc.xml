@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc
+        http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/aop
+        http://www.springframework.org/schema/aop/spring-aop-4.2.xsd
+        http://www.springframework.org/schema/tx
+        http://www.springframework.org/schema/tx/spring-tx.xsd">
+	<!--批量配置Handler,指定扫描的包全称  -->
+	<context:component-scan base-package="com.hst.controller"></context:component-scan>
+
+	<!--使用mvc:annotation-driven可以代替上面的映射器和适配器 这里面会默认加载很多参数绑定方法，比如json转换解析器就默认加载，所以优先使用下面的配置 -->
+	<mvc:annotation-driven></mvc:annotation-driven>
+
+	<!-- 配置视图解析器 进行jsp解析，默认使用jstl标签，classpath下得有jstl的包 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"></bean>
+	
+	<!-- 
+		首先，springmvc上传图片（文件）是通过MultipartResolver(Multipart解析器)处理的，
+		对于MultipartResolver而言它只是一个接口，它有两个实现类。
+		CommonsMultipartResolver和StandardServletMultipartResolver。
+		我用的是前者，它可以在spring的各个版本使用，但是需要依赖第三方包才能实现，
+		而后者不依赖第三方包，但是要求sping版本在3.1以上。
+	 -->
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">  
+    	<property name="defaultEncoding" value="utf-8"/>  
+    	<!-- 最大内存大小 -->  
+    	<property name="maxInMemorySize" value="10240"/>  
+   		<!-- 最大文件大小，-1为不限制大小 -->  
+    	<property name="maxUploadSize" value="-1"/>  
+    </bean>  
+</beans>
